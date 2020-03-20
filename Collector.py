@@ -1,4 +1,5 @@
 import eel
+import io
 import json
 import os
 import platform
@@ -154,7 +155,7 @@ def save_data(experiment_name,
         os.mkdir("web/User/Data")
     if os.path.isdir("web/User/Data/" + experiment_name) == False:
         os.mkdir("web/User/Data/" + experiment_name)
-    experiment_file = open("web/User/Data/" + experiment_name+ "/" + participant_code + "-" + completion_code + ".csv", "w", newline='')
+    experiment_file = open("web/User/Data/" + experiment_name+ "/" + participant_code + "-" + completion_code + ".csv", "w") #, newline=''
     experiment_file.write(responses)
 
 
@@ -177,8 +178,8 @@ def save_experiment(experiment_name,experiment_json):
 
     python_message = python_message + "...<br> saving <b>conditions.csv</b>"
     eel.python_bootbox(python_message)
-    try:
-        this_cond_file = open("web/User/Experiments/" + experiment_name + "/conditions.csv", "w", newline='')
+    try:    
+        this_cond_file = open("web/User/Experiments/" + experiment_name + "/conditions.csv", "w+") #, newline=''
         this_cond_file.write(experiment_json["python_conditions"])
     except:
         errors += "...<br><span class='text-danger'>Error when trying to save <b>conditions.csv</b> - is the file open on your computer?</span>"
@@ -191,12 +192,13 @@ def save_experiment(experiment_name,experiment_json):
         python_message = python_message + "...<br> saving the procedure <b>" + this_proc + "</b>"
         eel.python_bootbox(python_message)
         print(this_proc)
-        try:
-            this_proc_file = open("web/User/Experiments/" + experiment_name + "/" + this_proc, "w", newline='')
+        print(os.getcwd())
+        try:            
+            this_proc_file = open("web/User/Experiments/" + experiment_name + "/" + this_proc, "wb") #, newline=''
             this_proc_file.write(experiment_json["python_procs"][this_proc])
         except:
-            errors += "...<br><span class='text-danger'>Error when trying to save <b>" + \
-                              this_proc + \
+            errors += "...<br><span class='text-danger'> Error when trying to save <b>" + \
+                              "web/User/Experiments/" + experiment_name + "/" + this_proc + \
                               "</b> - is the file open on your computer?</span>"
             eel.python_bootbox(python_message)
         finally:
@@ -207,7 +209,7 @@ def save_experiment(experiment_name,experiment_json):
         eel.python_bootbox(python_message)
         print(this_stim)
         try:
-            this_stim_file = open("web/User/Experiments/" + experiment_name + "/" + this_stim, "w", newline='')
+            this_stim_file = open("web/User/Experiments/" + experiment_name + "/" + this_stim, "wb") #, newline=''
             this_stim_file.write(experiment_json["python_stims"][this_stim])
         except:
             print("error here");
@@ -228,7 +230,7 @@ def save_master_json(master_json):
     #detect if the "User" folder exists yet
     if os.path.isdir("web/User") == False:
         os.mkdir("web/User")
-    master_file = open("web/User/master.json", "w")
+    master_file = open("web/User/master.json", "w+")
     master_file.write(json.dumps(master_json))
 
 @eel.expose
@@ -237,7 +239,7 @@ def save_survey(survey_name,
     #detect if the "User" folder exists yet
     if os.path.isdir("web/User/Surveys") == False:
         os.mkdir("web/User/Surveys")
-    survey_file = open("web/User/Surveys/" + survey_name, "w", newline='')
+    survey_file = open("web/User/Surveys/" + survey_name, "wb") #, newline=''
     survey_file.write(survey_content)
 
 
