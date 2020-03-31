@@ -1,4 +1,4 @@
 Item,Trial Type,Max Time,Text,Shuffle 1,
-0,instruct,user,instructions here,off,
+0,instruct,user,"You are about to be presented with a series of letters. If the letter presented matches the one 3 letters before, then press ""m"" for ""match"". If not, press ""n"" for ""not"". The first three trials will be ""not"", so just press ""n"".",off,
 2 to 11,nback,user,This is the start of a new experiment.,off,
 ,,,,,
