@@ -1,0 +1,201 @@
+<style>
+#everything{
+  margin:auto;
+  width:600px;
+  padding:50px;
+  max-height:600px;
+  text-align: center;
+  display:none;
+}
+#fixation_cross{
+  margin:auto;
+  width:500px;
+  padding:50px;
+  max-height:600px;
+  text-align: center;
+  font-size: 100px;
+  padding:250px;
+}
+#face_image{
+  width:250px;
+  height:250px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  display:none;
+}
+#move_img_div{
+  position:relative;
+  width:250px;
+  height:250px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+#baseline_img,
+#move_1_img,
+#move_2_img,
+#move_3_img{
+  width:100%;
+  height:100%;
+  display:none;
+}
+#instructions_2{
+  /* display:none; */
+}
+#response_number{
+  position:absolute;
+  top:185px;
+  left:75px;
+  font-size: 12px;
+  background-color: grey;
+  padding:2px;
+  display:none;
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+}
+</style>
+<div id="fixation_cross">+</div>
+<div id="everything">
+  <div id="instructions_2">
+    If you see a <b>1</b> then lift your <b> index finger</b> as quickly as possible </br>
+    If you see a <b>2</b> then lift your <b> middle finger</b> as quickly as possible.
+  </div>
+  <div id="instructions_1">
+    Please hold down the <b>N</b> key with your <b>right index finger</b> and the <b>M</b> key with your <b>right middle finger</b>.
+  </div>
+  <img id="face_image"   src="../User/Stimuli/{{face}}" />
+  <div id="move_img_div">
+    <div id="response_number">{{response_no}}</div>
+    <img class="move_img" id="baseline_img" src="../User/Stimuli/{{base}}"/>
+    <img class="move_img" id="move_1_img"   src="../User/Stimuli/{{move_1}}"/>
+    <img class="move_img" id="move_2_img"   src="../User/Stimuli/{{move_2}}"/>
+    <img class="move_img" id="move_3_img"   src="../User/Stimuli/{{move_3}}"/>
+  </div>
+  
+</div>
+<input type="hidden" name="response_key" id="response_key"/>
+<input type="hidden" name="finger_response_time" id="finger_response_time"/>
+
+<script>
+// detect if any keys are down already?
+window.onmousemove = function (e) {
+  if (!e) e = window.event;
+  if (e.shiftKey) {/*shift is down*/}
+  if (e.altKey) {/*alt is down*/}
+  if (e.ctrlKey) {/*ctrl is down*/}
+  if (e.metaKey) {/*cmd is down*/}
+}
+
+
+//detect when both the index and middle finger are down
+if(typeof(parent.parent.keys) == "undefined"){
+  parent.parent.keys = {
+    m:false,
+    n:false
+  }
+}
+imitation_obj = {
+  phases : ["fingers_down",
+          "waiting_movement",
+          "response_window",
+          "after_response"],
+  phase : 0,
+}
+
+
+
+timer_arrays = [];
+
+// the following timings are based on Farmer et al (2016)
+var baseline_time;
+function start_movement(){
+  $("#instructions_1").html("<br><br>");
+  initial_time = Math.random()*1600 + 800; 
+  $("#baseline_img").show();
+  timer_arrays.push(setTimeout(function(){
+    if(parent.parent.keys.m & parent.parent.keys.n){
+      imitation_obj.phase = 2;
+      baseline_time = (new Date()).getTime();
+      //finger_response_time
+      setTimeout(function(){
+        $("#everything").html("<h1> Too slow </h1>");
+        setTimeout(function(){
+          Trial.submit();
+        },500);
+      },1000);
+      
+      $(".move_img").hide();
+      $("#move_1_img").show();
+      $("#response_number").show();
+      setTimeout(function(){
+        $(".move_img").hide();
+        $("#move_2_img").show();
+        setTimeout(function(){
+          $(".move_img").hide();
+          $("#move_3_img").show();
+        },34);
+      },34);
+    }
+  },initial_time));
+}
+
+
+
+Trial.set_timer(function(){
+  $("#fixation_cross").hide();
+  setTimeout(function(){
+    $("#everything").show();
+    $(window).bind('keydown', function(event) {
+      var this_key = String.fromCharCode(event.which).toLowerCase();
+    	if(this_key == "m"){
+    	  parent.parent.keys.m = true;
+    	}
+    	if(this_key == "n"){
+    	  parent.parent.keys.n = true;
+    	}
+    	if(parent.parent.keys.m & parent.parent.keys.n){
+    	  console.dir("reset appearing?");
+    	  if(imitation_obj.phase == 0){
+      	  $("#face_image").show();
+      	  imitation_obj.phase = 1;
+      	  timer_arrays.push(setTimeout(function(){
+        	  start_movement();
+      	  },1000));
+    	  }
+    	}
+    });
+    $(window).bind('keyup', function(event) {
+      var this_key = String.fromCharCode(event.which).toLowerCase();
+      if(this_key == "m" | this_key == "n"){
+        parent.parent.keys[this_key] = false;
+        if(imitation_obj.phase < 2){
+          timer_arrays.forEach(function(this_timer){
+            clearTimeout(this_timer);
+          });
+          $("#face_image").hide();
+          $("#baseline_img").hide();
+          $("#instructions_1").html("Please put your <b>right index finger</b> on the <b>N</b> key, and your <b>right middle finger</b> on the <b>M</b> key.");
+          imitation_obj.phase = 0;
+        }
+      }
+      if(imitation_obj.phase == 2){
+        if(this_key == "m" | this_key == "n"){
+          var response_time = (new Date()).getTime() - baseline_time;
+          $("#finger_response_time").val(response_time)
+          $("#response_key").val(this_key);
+          Trial.submit();
+        }
+      }
+    });
+  },150);
+},500);
+</script>

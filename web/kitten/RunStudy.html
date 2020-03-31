@@ -657,12 +657,15 @@ function insert_start(){
     if(typeof(exp_json.trialtypes) !== "undefined"){
       exp_json.trialtypes.start_experiment =
         "<h1>Before starting</h1>" +
-        "<div>Please be careful about what details you give. If you feel that any inappropriate details are being asked, please contact whoever asked you to participate.</div>" +
+        "<h2>Please be careful about what details you give. If you feel that any inappropriate details are being asked, please contact whoever asked you to participate.</h2>" +
+        "<h3 class='text-danger'>This website stores information on your local browser to help the experiments run smoother, and resume where you left off if you refresh the page. If you are unhappy with this, please do not proceed</h3>"+
         "<button class='btn btn-primary' onclick='Trial.submit()'>Start</button>";
     }  
   }
   Study.activate_pipe();
 }
+
+
 
 function parse_sheets(){
   var proc_sheet_name = exp_json.this_condition.procedure
@@ -675,6 +678,31 @@ function parse_sheets(){
   
   switch(Study.get_vars.platform){
     case "localhost":
+      eel.expose(python_stim_load);
+      function python_stim_load(stim_sheet_content){
+        console.dir(stim_sheet_content);
+        exp_json.parsed_stim = [null,null].concat(collectorPapaParsed(stim_sheet_content));
+        proc_stim_loaded[0] = "stimuli";
+        if(proc_stim_loaded.join("-") == "stimuli-procedure"){
+          Study.activate_pipe();
+        }
+      }
+      
+      eel.expose(python_proc_load);
+      function python_proc_load(proc_sheet_content){
+        console.dir(proc_sheet_content);
+        exp_json.parsed_proc = collectorPapaParsed(proc_sheet_content);
+        proc_stim_loaded[1] = "procedure";
+        if(proc_stim_loaded.join("-") == "stimuli-procedure"){
+          Study.activate_pipe();
+        }
+      }
+    
+      eel.load_stimuli(Study.get_vars.location,
+                       stim_sheet_name);
+      eel.load_procedure(Study.get_vars.location,
+                         proc_sheet_name);
+      break;
     case "preview":
     case "github":
       var proc_url = "../User/Experiments/" + 

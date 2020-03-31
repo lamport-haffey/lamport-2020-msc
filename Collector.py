@@ -35,6 +35,44 @@ def load_master_json():
         master_json = json.loads(master_json)
         eel.load_master_json(master_json)
 
+@eel.expose
+def load_stimuli(experiment,
+                 stimuli_file):
+    try:
+        stimuli_csv = open("web/User/Experiments/" + 
+                                        experiment +
+                                        "/" +
+                                        stimuli_file, "r")
+        stimuli_csv = stimuli_csv.read()
+    except:
+        stimuli_csv = ""
+    finally:
+        eel.python_stim_load(stimuli_csv)
+
+@eel.expose
+def load_procedure(experiment,
+                   procedure_file):
+    try:
+        procedure_csv = open("web/User/Experiments/" + 
+                                        experiment +
+                                        "/" +
+                                        procedure_file, "r")
+        procedure_csv = procedure_csv.read()
+    except:
+        procedure_csv = ""
+    finally:
+        eel.python_proc_load(procedure_csv)
+
+@eel.expose
+def load_trialtype(trialtype):
+    try:
+        trialtype_html = open("web/User/Trialtypes/" + trialtype, "r")
+        trialtype_html = trialtype_html.read()
+    except:
+        trialtype_html = ""
+    finally:
+        eel.python_trialtype(trialtype_html)
+
 
 @eel.expose
 def pull_open_collector(username,
@@ -244,6 +282,14 @@ def save_survey(survey_name,
     survey_file = open("web/User/Surveys/" + survey_name, "w", newline='')
     survey_file.write(survey_content)
 
+@eel.expose
+def save_trialtype(trialtype_name,
+                   trialtype_content):
+    #detect if the "User" folder exists yet
+    if os.path.isdir("web/User/Trialtypes") == False:
+        os.mkdir("web/User/Trialtypes")
+    trialtype_file = open("web/User/Trialtypes/" + trialtype_name, "w", newline='')
+    trialtype_file.write(trialtype_content)
 
 ####################
 # Start Collector ##

@@ -1,0 +1,112 @@
+<style>
+#cue_text{
+  color:{{letter_color}};
+  font-size:80px;
+  margin:auto;
+  padding:50px;
+  max-height:300px;
+  text-align: center;
+  display:none;
+}
+#fixation{
+  font-size:80px;
+  margin:auto;
+  padding:50px;
+  max-height:300px;
+  text-align: center;
+}
+#main_text{
+  margin:auto;
+  width:500px;
+  padding:50px;
+  max-height:600px;
+  text-align: center;  
+}
+#proceed_button{
+  position:absolute;  
+  right: 20px;  
+}  
+#trial_contents{
+  position: absolute;
+  top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin:auto;
+  width:600;
+  height:600;
+}
+.letter{
+  padding:25px;
+  font-size:60px;
+}
+</style>
+<div id="trial_contents">
+  <div id="main_text">
+    <div id="trial_text">
+      <span class="letter" style="color:{{color_1}}"><b>{{key_1}}</b></span>
+      <span class="letter" style="color:{{color_2}}"><b>{{key_2}}</b></span>
+      <span class="letter" style="color:{{color_3}}"><b>{{key_3}}</b></span>
+      <span class="letter" style="color:{{color_4}}"><b>{{key_4}}</b><span>
+    </div>
+    <div id="fixation">+</div>
+    <div id="cue_text"><b>{{cue}}</b></div>
+  </div>
+</div>
+<textarea name="cue"            style="display:none">{{cue}}</textarea>
+<textarea name="colour"         style="display:none">{{letter_color}}</textarea>
+<textarea name="compatible"     style="display:none">{{compatible}}</textarea> 
+<textarea name="response_color" style="display:none" id="response_textarea"></textarea> 
+<textarea name="rt_ms"          style="display:none" id="response_time_textarea"></textarea> 
+<script>
+phases = ["jittered_start",
+          "response"]
+current_phase = phases[0];
+var baseline_time;
+Trial.set_timer(function(){
+  jitter = Math.random() * 1000 + 500;
+  $("#fixation").hide();
+  setTimeout(function(){
+    current_phase = phases[1];
+    $("#fixation").hide();
+    $("#cue_text").show();
+    baseline_time = (new Date()).getTime();
+    setTimeout(function(){
+      Trial.submit();
+    },{{stroop_time}});
+  },jitter);
+},500)
+$(window).bind('keydown', function(event) {
+  if(current_phase == "response"){
+    switch (String.fromCharCode(event.which).toLowerCase()) {
+      case '{{key_1}}'.toLowerCase():
+        event.preventDefault(); 
+        // not sure this is working in firefox    
+        $("#response_textarea").val('{{color_1}}');
+        $("#response_time_textarea").val((new Date()).getTime() - baseline_time);
+        Trial.submit();
+        break;
+      case '{{key_2}}'.toLowerCase():
+        event.preventDefault(); 
+        // not sure this is working in firefox
+        $("#response_textarea").val('{{color_2}}');
+        $("#response_time_textarea").val((new Date()).getTime() - baseline_time);
+        Trial.submit();
+        break;            
+      case '{{key_3}}'.toLowerCase():
+        event.preventDefault(); 
+        // not sure this is working in firefox
+        $("#response_textarea").val('{{color_3}}');
+        $("#response_time_textarea").val((new Date()).getTime() - baseline_time);
+        Trial.submit();
+        break;            
+      case '{{key_4}}'.toLowerCase():
+        event.preventDefault(); // not sure this is working in firefox
+        $("#response_textarea").val('{{color_4}}');
+        $("#response_time_textarea").val((new Date()).getTime() - baseline_time);
+        Trial.submit();
+        break;            
+    }
+  }
+});
+</script>

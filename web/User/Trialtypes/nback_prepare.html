@@ -1,0 +1,86 @@
+<!--
+/*  Collector (Garcia, Kornell, Kerr, Blake & Haffey)
+    A program for running experiments on the web
+    Copyright 2012-2016 Mikey Garcia & Nate Kornell
+
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License version 3 as published by
+    the Free Software Foundation.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+ 		
+		Kitten release (2020) author: Dr. Anthony Haffey (a.haffey@reading.ac.uk)		
+*/
+-->
+<script>
+if(typeof(parent.parent.exp_json.storage) == "undefined"){
+  //prepare all trials
+  
+  letter_array = "{{characters}}".split("");
+  
+  number_of_trials = {{number_of_trials}};
+  
+  array_repeats = Math.ceil(number_of_trials/letter_array.length);
+  
+  shuffled_letters = [];
+  for(var i = 0; i < array_repeats; i++){
+    shuffled_letters.concat(letter_array);
+  }
+  shuffled_letters = shuffle(shuffled_letters);
+  
+  
+  // insert matches
+  
+  
+  
+  
+
+  
+  for(var i = 0; i < {{letter_gap}}; i++){
+    letter_array.push(null);
+  }
+  letter_array.push(this_letter);
+  response_letter = null;
+} else {
+  letter_array = Trial.get("letter_array");
+  letter_array.push(this_letter);
+  response_letter = letter_array.splice(0,1);
+}
+
+
+var this_letter = "{{cue}}";
+var letter_array;
+$("#current_letter").html(this_letter);
+
+
+//solution from https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
+
+
+</script>
+

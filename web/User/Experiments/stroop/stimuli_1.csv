@@ -12,7 +12,7 @@ RED,n,Green,incompatible,purple,green,red,blue,D,F,J,K,left middle,left index,ri
 RED,n,Red,compatible,purple,green,red,blue,D,F,J,K,left middle,left index,right index,right middle,
 RED,n,Blue,incompatible,purple,green,red,blue,D,F,J,K,left middle,left index,right index,right middle,
 BLUE,m,Purple,incompatible,purple,green,red,blue,D,F,J,K,left middle,left index,right index,right middle,
-BLUE,m,Green,compatible,purple,green,red,blue,D,F,J,K,left middle,left index,right index,right middle,
+BLUE,m,Green,incompatible,purple,green,red,blue,D,F,J,K,left middle,left index,right index,right middle,
 BLUE,m,Red,incompatible,purple,green,red,blue,D,F,J,K,left middle,left index,right index,right middle,
 BLUE,m,Blue,compatible,purple,green,red,blue,D,F,J,K,left middle,left index,right index,right middle,
 ,,,,,,,,,,,,,,,,

@@ -1,0 +1,71 @@
+<!--
+/*  Collector (Garcia, Kornell, Kerr, Blake & Haffey)
+    A program for running experiments on the web
+    Copyright 2012-2016 Mikey Garcia & Nate Kornell
+
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License version 3 as published by
+    the Free Software Foundation.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+ 		
+		Kitten release (2020) author: Dr. Anthony Haffey (a.haffey@reading.ac.uk)		
+*/
+-->
+<style>
+#current_letter{
+  margin:auto;
+  width:500px;
+  padding:50px;
+  height:600px;
+  text-align: center;
+  font-size:100px;
+  display:none;
+}
+#proceed_button{
+  position:absolute;
+  right: 20px;
+}
+#trial_contents{
+  position: absolute;
+  top:0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  margin:auto;
+  width:600px;
+  height:600px;
+}
+</style>
+<div id="trial_contents">
+  <div id="current_letter">{{cue}}</div>
+</div>
+<input type="hidden" name="response_letter" id="response_letter"/>
+<script>
+Trial.set_timer(function(){
+  setTimeout(function(){
+    $("#current_letter").show();
+    $(window).bind('keydown', function(event) {
+      var this_key = String.fromCharCode(event.which).toLowerCase();
+    	switch(this_key){
+    	  case "m":
+    	  case "n":
+    	    console.dir("HI");
+      	  $("#response_letter").val(this_key);
+    	    Trial.submit();    
+    	    break;
+    	}
+    });  
+  },1000);
+  
+  
+},0)
+</script>
+
